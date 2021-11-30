@@ -1,0 +1,16 @@
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\regexTester.exe
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\regexTester.deps.json
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\regexTester.runtimeconfig.json
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\regexTester.runtimeconfig.dev.json
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\regexTester.dll
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\ref\regexTester.dll
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\regexTester.pdb
+C:\Users\shakurov\source\repos\regexTester\obj\Debug\net5.0-windows\regexTester.csproj.AssemblyReference.cache
+C:\Users\shakurov\source\repos\regexTester\obj\Debug\net5.0-windows\regexTester.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\shakurov\source\repos\regexTester\obj\Debug\net5.0-windows\regexTester.AssemblyInfoInputs.cache
+C:\Users\shakurov\source\repos\regexTester\obj\Debug\net5.0-windows\regexTester.AssemblyInfo.cs
+C:\Users\shakurov\source\repos\regexTester\obj\Debug\net5.0-windows\regexTester.csproj.CoreCompileInputs.cache
+C:\Users\shakurov\source\repos\regexTester\obj\Debug\net5.0-windows\regexTester.dll
+C:\Users\shakurov\source\repos\regexTester\obj\Debug\net5.0-windows\ref\regexTester.dll
+C:\Users\shakurov\source\repos\regexTester\obj\Debug\net5.0-windows\regexTester.pdb
+C:\Users\shakurov\source\repos\regexTester\obj\Debug\net5.0-windows\regexTester.genruntimeconfig.cache
