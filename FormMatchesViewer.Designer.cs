@@ -2,7 +2,7 @@
 
 namespace regexTester
 {
-    partial class Form1
+    partial class FormMatchesViewer
     {
         /// <summary>
         ///  Required designer variable.
@@ -35,6 +35,11 @@ namespace regexTester
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Text = "Regex Tester";
 
+            panelCustom = new System.Windows.Forms.Panel()
+            {
+                Dock = System.Windows.Forms.DockStyle.Top,
+                BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+            };
             panelTop = new System.Windows.Forms.Panel()
             {
                 Dock = System.Windows.Forms.DockStyle.Top,
@@ -109,12 +114,17 @@ namespace regexTester
                 MaximumSize = new System.Drawing.Size(new System.Windows.Forms.Button().Height * 2, new System.Windows.Forms.Button().Height)
             };
 
-            this.Controls.Add(panelText);
+            this.Controls.Add(panelCustom);
             this.Controls.Add(panelTop);
+            this.Controls.Add(panelText);
             this.Controls.Add(panelMatchesLog);
+
+            panelCustom.BringToFront();
             panelTop.BringToFront();
             panelMatchesLog.BringToFront();
             panelText.BringToFront();
+
+            panelCustom.Height /= 2;
             panelTop.Height /= 2;
             panelMatchesLog.Width = (int)(panelMatchesLog.Width * 1.5);
 
@@ -131,18 +141,23 @@ namespace regexTester
 
             this.edText.SelectionChanged += this.edText_SelectionChanged;
 
-            edTemplate.Location = new System.Drawing.Point(4, (panelTop.ClientSize.Height - buttonTest.Height) / 2);
-            edTemplate.Size = new System.Drawing.Size(300, panelTop.ClientSize.Height - 8);
-            panelTop.Controls.Add(edTemplate);
+            edTemplate.Location = new System.Drawing.Point(4, (panelCustom.ClientSize.Height - buttonTest.Height) / 2);
+            edTemplate.Size = new System.Drawing.Size(300, panelCustom.ClientSize.Height - 8);
+            panelCustom.Controls.Add(edTemplate);
 
-            cbSingleLine.Location = new System.Drawing.Point(edTemplate.Right + 4, (panelTop.ClientSize.Height - buttonTest.Height) / 2);
-            panelTop.Controls.Add(cbSingleLine);
+            cbSingleLine.Location = new System.Drawing.Point(edTemplate.Right + 4, (panelCustom.ClientSize.Height - buttonTest.Height) / 2);
+            panelCustom.Controls.Add(cbSingleLine);
 
-            buttonTest.Location = new System.Drawing.Point(cbSingleLine.Right + 4, (panelTop.ClientSize.Height - buttonTest.Height) / 2);
-            panelTop.Controls.Add(buttonTest);
+            buttonTest.Location = new System.Drawing.Point(cbSingleLine.Right + 4, (panelCustom.ClientSize.Height - buttonTest.Height) / 2);
+            panelCustom.Controls.Add(buttonTest);
             buttonTest.Click += buttonTest_Click;
 
-            btnMatchPrev.Location = new System.Drawing.Point(buttonTest.Right + 12, (panelTop.ClientSize.Height - btnMatchPrev.Height) / 2);
+            buttonOpenFile.Location = new System.Drawing.Point(buttonTest.Right + 4, (panelCustom.ClientSize.Height - btnTextClearFormat.Height) / 2);
+            buttonOpenFile.Width = (int)(buttonOpenFile.Width * 0.7);
+            panelCustom.Controls.Add(buttonOpenFile);
+            buttonOpenFile.Click += buttonOpenFile_Click;
+
+            btnMatchPrev.Location = new System.Drawing.Point(4, (panelTop.ClientSize.Height - btnMatchPrev.Height) / 2);
             btnMatchPrev.Width /= 2;
             panelTop.Controls.Add(btnMatchPrev);
             btnMatchPrev.Click += btnMatchPrev_Click;
@@ -157,11 +172,6 @@ namespace regexTester
             panelTop.Controls.Add(btnTextClearFormat);
             btnTextClearFormat.Click += btnTextClearFormat_Click;
 
-            buttonOpenFile.Location = new System.Drawing.Point(btnTextClearFormat.Right + 4, (panelTop.ClientSize.Height - btnTextClearFormat.Height) / 2);
-            buttonOpenFile.Width = (int)(buttonOpenFile.Width * 0.7);
-            panelTop.Controls.Add(buttonOpenFile);
-            buttonOpenFile.Click += buttonOpenFile_Click;
-
             this.components.Add(openFileDialog);
 
             this.Load += Form1_Load;
@@ -169,6 +179,7 @@ namespace regexTester
         }
 
 
+        private System.Windows.Forms.Panel panelCustom;
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Panel panelText;
         private System.Windows.Forms.RichTextBox edText;

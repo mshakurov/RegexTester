@@ -11,11 +11,11 @@ using System.Text;
 
 namespace regexTester
 {
-    public partial class Form1 : Form
+    public partial class FormMatchesViewer : Form
     {
         string setsFileName = @".\Ssettings.xml";
         Sets sets;
-        public Form1()
+        public FormMatchesViewer()
         {
             InitializeComponent();
         }
@@ -29,40 +29,21 @@ namespace regexTester
                 edTemplate.SelectedItem = sets.RGHistItems[0];
         }
 
-        private void buttonTest_Click(object sender, EventArgs e)
+        public void ShowMatches(string text, Match[] matches)
         {
-            if (string.IsNullOrWhiteSpace(edTemplate.Text))
-            {
-                MessageBox.Show("Не задан шаблон");
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(edText.Text))
-            {
-                MessageBox.Show("Не задан текст");
-                return;
-            }
-
-            var item = sets.GetOrAddRGHistItem(edTemplate.Text);
-            if (item.IsNew)
-                edTemplate.Items.Insert(0, item);
-            edTemplate.SelectedItem = item;
-
             try
             {
-                try { SerializeHelper.Save(setsFileName, sets); } catch { }
-
-                int ss = edMatchesLog.SelectionStart, sl = edText.SelectionLength;
                 edText.SelectAll();
                 edText.SelectionBackColor = edText.BackColor;
                 edText.SelectionColor = edText.ForeColor;
-                edMatchesLog.SelectionStart = ss;
-                edText.SelectionLength = sl;
+                edText.DeselectAll();
+                edMatchesLog.Text = "";
 
                 var state = new RegexMatchState();
 
                 edText.Tag = state;
 
-                state.Matches = Regex.Matches(edText.Text, edTemplate.Text, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | (cbSingleLine.Checked ? RegexOptions.Singleline : RegexOptions.Multiline)).OfType<Match>().Where(m => m.Success).ToArray();
+                state.Matches = matches;
 
                 if (state.Matches.Length > 0)
                     state.CurMatchIdx = 0;
@@ -75,27 +56,29 @@ namespace regexTester
                 {
                     var sw = Stopwatch.StartNew();
                     var breaked = false;
-                    
+
                     edText.SuspendLayout();
+                    this.SuspendLayout();
                     try
                     {
-                    foreach (var m in state.Matches)
-                    {
-                        edText.Select(m.Index, m.Length);
-                        edText.SelectionColor = Color.Yellow;
-                        edText.SelectionBackColor = Color.Red;
-
-                        if (sw.ElapsedMilliseconds >= 5000)
+                        foreach (var m in state.Matches)
                         {
-                            if (breaked = (MessageBox.Show(this, "Слишком много совпадений!\r\nПродолжить следующие 5 сек добавлять совпадения?", "Совпадения", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No))
-                                break;
-                            sw.Restart();
+                            edText.Select(m.Index, m.Length);
+                            edText.SelectionColor = Color.Yellow;
+                            edText.SelectionBackColor = Color.Red;
+
+                            if (sw.ElapsedMilliseconds >= 5000)
+                            {
+                                if (breaked = (MessageBox.Show(this, "Слишком много совпадений!\r\nПродолжить следующие 5 сек добавлять совпадения?", "Совпадения", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No))
+                                    break;
+                                sw.Restart();
+                            }
                         }
-                    }
                     }
                     finally
                     {
                         edText.ResumeLayout();
+                        this.ResumeLayout();
                     }
 
                     int idx = -1;
@@ -121,6 +104,29 @@ namespace regexTester
                 ShowError(string.Format("### Ошибка:\r\n{0}", ex.GetFullMessage()), "Исполнение");
             }
 
+        }
+
+        private void buttonTest_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(edTemplate.Text))
+            {
+                MessageBox.Show("Не задан шаблон");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(edText.Text))
+            {
+                MessageBox.Show("Не задан текст");
+                return;
+            }
+
+            var item = sets.GetOrAddRGHistItem(edTemplate.Text);
+            if (item.IsNew)
+                edTemplate.Items.Insert(0, item);
+            edTemplate.SelectedItem = item;
+
+            try { SerializeHelper.Save(setsFileName, sets); } catch { }
+
+            ShowMatches(edText.Text, Regex.Matches(edText.Text, edTemplate.Text, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | (cbSingleLine.Checked ? RegexOptions.Singleline : RegexOptions.Multiline)).OfType<Match>().Where(m => m.Success).ToArray());
         }
 
         private void ShowError(string text, string caption)
