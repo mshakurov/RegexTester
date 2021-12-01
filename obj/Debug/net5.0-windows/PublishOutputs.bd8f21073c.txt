@@ -1,0 +1,5 @@
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\publish\regexTester.exe
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\publish\regexTester.dll
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\publish\regexTester.deps.json
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\publish\regexTester.runtimeconfig.json
+C:\Users\shakurov\source\repos\regexTester\bin\Debug\net5.0-windows\publish\regexTester.pdb

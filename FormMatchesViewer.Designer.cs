@@ -179,7 +179,7 @@ namespace regexTester
         }
 
 
-        private System.Windows.Forms.Panel panelCustom;
+        public System.Windows.Forms.Panel panelCustom;
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Panel panelText;
         private System.Windows.Forms.RichTextBox edText;

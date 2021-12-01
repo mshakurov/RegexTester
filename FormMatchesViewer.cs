@@ -33,6 +33,7 @@ namespace regexTester
         {
             try
             {
+                edText.Text = text;
                 edText.SelectAll();
                 edText.SelectionBackColor = edText.BackColor;
                 edText.SelectionColor = edText.ForeColor;
@@ -104,6 +105,25 @@ namespace regexTester
                 ShowError(string.Format("### Ошибка:\r\n{0}", ex.GetFullMessage()), "Исполнение");
             }
 
+        }
+
+        public string PrepareText(string text)
+        {
+            var temp = edText.Text;
+            edText.Text = text;
+            text = edText.Text;
+            edText.Text = temp;
+            return text;
+        }
+
+        public string GetText()
+        {
+            return edText.Text;
+        }
+
+        public void SetText(string text)
+        {
+            edText.Text = text;
         }
 
         private void buttonTest_Click(object sender, EventArgs e)
