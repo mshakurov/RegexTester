@@ -52,7 +52,8 @@ namespace regexTester
             };
             edText = new System.Windows.Forms.RichTextBox()
             {
-                Dock = System.Windows.Forms.DockStyle.Fill
+                Dock = System.Windows.Forms.DockStyle.Fill,
+                HideSelection = false
             };
             panelMatchesLog = new System.Windows.Forms.Panel()
             {
@@ -64,7 +65,8 @@ namespace regexTester
                 Multiline = true,
                 Dock = System.Windows.Forms.DockStyle.Fill,
                 BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle,
-                ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+                ScrollBars = System.Windows.Forms.ScrollBars.Vertical,
+                HideSelection = false
             };
             edTemplate = new System.Windows.Forms.ComboBox()
             {
@@ -97,6 +99,10 @@ namespace regexTester
             cbSingleLine = new System.Windows.Forms.CheckBox()
             {
                 Text = "Single line"
+            };
+			cbMultiLine = new System.Windows.Forms.CheckBox()
+            {
+                Text = "Multi line"
             };
             buttonOpenFile = new System.Windows.Forms.Button()
             {
@@ -147,8 +153,11 @@ namespace regexTester
 
             cbSingleLine.Location = new System.Drawing.Point(edTemplate.Right + 4, (panelCustom.ClientSize.Height - buttonTest.Height) / 2);
             panelCustom.Controls.Add(cbSingleLine);
+			
+            cbMultiLine.Location = new System.Drawing.Point(cbSingleLine.Right + 4, (panelCustom.ClientSize.Height - buttonTest.Height) / 2);
+            panelCustom.Controls.Add(cbMultiLine);
 
-            buttonTest.Location = new System.Drawing.Point(cbSingleLine.Right + 4, (panelCustom.ClientSize.Height - buttonTest.Height) / 2);
+            buttonTest.Location = new System.Drawing.Point(cbMultiLine.Right + 4, (panelCustom.ClientSize.Height - buttonTest.Height) / 2);
             panelCustom.Controls.Add(buttonTest);
             buttonTest.Click += buttonTest_Click;
 
@@ -193,6 +202,7 @@ namespace regexTester
         private System.Windows.Forms.Button btnTextClearFormat;
         private System.Windows.Forms.TextBox edTextState;
         private System.Windows.Forms.CheckBox cbSingleLine;
+        private System.Windows.Forms.CheckBox cbMultiLine;
         private System.Windows.Forms.Button buttonOpenFile;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
 

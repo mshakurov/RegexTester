@@ -39,10 +39,11 @@ namespace regexTester
                 edText.SelectionColor = edText.ForeColor;
                 edText.DeselectAll();
                 edMatchesLog.Text = "";
+                var point = new Point(edText.SelectionStart, edText.SelectionLength);
 
                 var state = new RegexMatchState();
 
-                edText.Tag = state;
+                State = state;
 
                 state.Matches = matches;
 
@@ -87,14 +88,23 @@ namespace regexTester
                     {
                         sbMatchesLog.AppendLine($"M: {++idx}. idx:{m.Index}, len:{m.Length}");
                         sbMatchesLog.AppendLine($"- Groups ({m.Groups.Count}):");
-                        sbMatchesLog.AppendLine($"{string.Join(Environment.NewLine, m.Groups.OfType<Group>().Select((g, i) => $"- - {i + 1}. idx:{g.Index}, len:{g.Length}, val:{g.Value}"))}");
+                        sbMatchesLog.AppendLine($"{string.Join(Environment.NewLine, m.Groups.OfType<Group>().Select((g, i) => $"- - {i + 1}. idx:{g.Index}, [{(g.Success ? "v" : " ")}] len:{g.Length}, val:{g.Value}"))}");
                     }
                     edMatchesLog.Text += Environment.NewLine + sbMatchesLog.ToString();
 
-                    state.CurMatchIdx = 0;
+                    if (point.X >= 0)
+                    {
+                        edText.SelectionStart = point.X;
+                        edText.SelectionLength = point.Y;
+                        TextSelectionChanged();
+                    }
+                    else
+                    {
+                        state.CurMatchIdx = 0;
 
-                    SelectMatch();
-                    edText.Focus();
+                        SelectMatch();
+                        edText.Focus();
+                    }
                 }
                 // else
                 //     ShowError("Не найдено", "Regex");
@@ -146,7 +156,10 @@ namespace regexTester
 
             try { SerializeHelper.Save(setsFileName, sets); } catch { }
 
-            ShowMatches(edText.Text, Regex.Matches(edText.Text, edTemplate.Text, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | (cbSingleLine.Checked ? RegexOptions.Singleline : RegexOptions.Multiline)).OfType<Match>().Where(m => m.Success).ToArray());
+            ShowMatches(edText.Text, Regex.Matches(edText.Text, edTemplate.Text, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant
+                | (cbSingleLine.Checked ? RegexOptions.Singleline : RegexOptions.None)
+                | (cbMultiLine.Checked ? RegexOptions.Multiline : RegexOptions.None)
+                ).OfType<Match>().Where(m => m.Success).ToArray());
         }
 
         private void ShowError(string text, string caption)
@@ -164,6 +177,10 @@ namespace regexTester
                 if (state == null || state.Matches == null || state.Matches.Length == 0)
                     return null;
                 return state;
+            }
+            set
+            {
+                edText.Tag = value;
             }
         }
 
@@ -215,7 +232,7 @@ namespace regexTester
             using (var fs = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
             using (var sr = new StreamReader(fs))
             {
-                edText.Tag = null;
+                State = null;
                 edText.Text = sr.ReadToEnd();
             }
         }
@@ -224,20 +241,28 @@ namespace regexTester
         {
             SelectMatchLog();
             edMatchesLog.Focus();
+            edMatchesLog.ScrollToCaret();
         }
 
         private void edText_SelectionChanged(object sender, EventArgs e)
+        {
+            TextSelectionChanged();
+        }
+
+        private void TextSelectionChanged()
         {
             var selStart = edText.SelectionStart;
 
             var line = edText.GetLineFromCharIndex(selStart);
             var col = selStart - edText.GetFirstCharIndexFromLine(line);
-            edTextState.Text = $"r:{line}:c:{col}, sel:{selStart}({edText.SelectionLength})";
+            var curMI = State?.CurMatchIdx;
 
             ValidateCurIndex();
 
             SelectMatchLog();
             UpdateNavButtons();
+
+            edTextState.Text = $"r:{line}:c:{col}, sel:{selStart}({edText.SelectionLength}), match:{State?.CurMatchIdx}(prev:{curMI})";
         }
 
         private void ValidateCurIndex()
@@ -277,7 +302,7 @@ namespace regexTester
 
         private static bool InMatch(Match m, int selStart)
         {
-            return m.Index <= selStart && m.Index + m.Length >= selStart;
+            return m.Index <= selStart && m.Index + m.Length > selStart;
         }
 
         private void SelectMatch()
@@ -286,11 +311,17 @@ namespace regexTester
 
             var match = State.Matches[State.CurMatchIdx];
 
-            edText.Select(match.Index, match.Length);
-            edText.ScrollToCaret();
-
-            SelectMatchLog();
-            UpdateNavButtons();
+            edText.SelectionChanged -= edText_SelectionChanged;
+            try
+            {
+                edText.Select(match.Index, match.Length);
+                edText.ScrollToCaret();
+            }
+            finally
+            {
+                edText.SelectionChanged += edText_SelectionChanged;
+                TextSelectionChanged();
+            }
         }
 
         private void UpdateNavButtons()
@@ -322,6 +353,7 @@ namespace regexTester
                 idx = edMatchesLog.Text.IndexOf("\r\n", idx);
                 if (idx < 0) idx = edMatchesLog.TextLength;
                 edMatchesLog.SelectionLength = idx - edMatchesLog.SelectionStart;
+                edMatchesLog.ScrollToCaret();
             }
         }
 
