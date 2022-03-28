@@ -7,11 +7,12 @@
             "type": "process",
             "args": [
                 "build",
+                // "-c","Release",
                 "${workspaceFolder}/regexTester.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
         },
         {
             "label": "publish",
