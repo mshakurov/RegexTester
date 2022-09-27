@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <!-- <TargetFrameworks>net472;net5.0-windows</TargetFrameworks> -->
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\Utils\SortableBindingList.cs" Link="SortableBindingList.cs" />
+    <Compile Include="..\Utils\SortableBindingList.cs" Link="SortableBindingList.cs" />
   </ItemGroup>
 
 </Project>
