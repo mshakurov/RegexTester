@@ -14,7 +14,7 @@ namespace regexTester
 {
   public partial class FormMatchesViewer : Form
   {
-    string setsFileName = @".\Ssettings.xml";
+    string setsFileName = @"Settings.xml";
     Sets sets;
     public FormMatchesViewer()
     {
@@ -27,6 +27,8 @@ namespace regexTester
     private void Form1_Load(object sender, EventArgs e)
     {
       setsFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Path.GetFileName(setsFileName));
+	  //MessageBox.Show(setsFileName);
+	  //if (!File.Exists(setsFileName)) try { SerializeHelper.Save(setsFileName, new Sets() { RGHistItems = new RGHistItem[0] }); } catch (Exception ex){ MessageBox.Show(ex.ToString()); }
       sets = SerializeHelper.LoadOrDefault<Sets>(setsFileName, new Sets() { RGHistItems = new RGHistItem[0] });
       edTemplate.Items.AddRange(sets.RGHistItems);
       if (sets.RGHistItems.Length > 0)
