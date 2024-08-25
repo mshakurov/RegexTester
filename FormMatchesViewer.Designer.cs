@@ -137,7 +137,7 @@ namespace regexTester
         Dock = System.Windows.Forms.DockStyle.Top,
         Height = btnMatchLogToTextSync.Height + 4
       };
-      tabControlMacthes = new()
+      tabControlMacthes = new System.Windows.Forms.TabControl() 
       {
         Dock = System.Windows.Forms.DockStyle.Fill
       };
@@ -153,7 +153,7 @@ namespace regexTester
       {
         AllowNew = false,
       };
-      gridMatches = new()
+      gridMatches = new System.Windows.Forms.DataGridView()
       {
         DataSource = bsMatchGroups,
         ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText,
@@ -162,7 +162,7 @@ namespace regexTester
         ReadOnly = true,
       };
       gridMatches.CellDoubleClick += gridMatchesCellDoubleClick; 
-      navigatorMatchGroups = new()
+      navigatorMatchGroups = new System.Windows.Forms.BindingNavigator()
       {
         BindingSource = bsMatchGroups,
         CanOverflow = true,
@@ -171,7 +171,7 @@ namespace regexTester
       navigatorMatchGroups.AddStandardItems();
       navigatorMatchGroups.Items.Remove(navigatorMatchGroups.DeleteItem);
       navigatorMatchGroups.Items.Remove(navigatorMatchGroups.AddNewItem);
-      menuStripMatchGroups = new ()
+      menuStripMatchGroups = new System.Windows.Forms.ContextMenuStrip()
       {
       };
       gridMatches.ContextMenuStrip = this.menuStripMatchGroups;
@@ -266,12 +266,10 @@ namespace regexTester
       panelCustom.Controls.Add(edTemplate);
 
       btnMatchPrev.Location = new System.Drawing.Point(4, (panelTop.ClientSize.Height - btnMatchPrev.Height) / 2);
-      btnMatchPrev.Width /= 2;
       panelTop.Controls.Add(btnMatchPrev);
       btnMatchPrev.Click += btnMatchPrev_Click;
 
       btnMatchNext.Location = new System.Drawing.Point(btnMatchPrev.Right + 4, (panelTop.ClientSize.Height - btnMatchNext.Height) / 2);
-      btnMatchNext.Width /= 2;
       panelTop.Controls.Add(btnMatchNext);
       btnMatchNext.Click += btnMatchNext_Click;
 

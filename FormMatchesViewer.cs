@@ -20,6 +20,9 @@ namespace regexTester
     {
       InitializeComponent();
 
+      btnMatchPrev.Width = btnMatchPrev.Width / 2;
+      btnMatchNext.Width = btnMatchNext.Width / 2;
+
       //   edMatchesLog.ScrollBars = ScrollBars.Both;
       //   edMatchesLog.WordWrap = false;
     }
