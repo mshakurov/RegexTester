@@ -189,3 +189,4 @@ FakesAssemblies/
 *.vshost.exe
 *.vshost.exe.manifest
 # /regexTester
+/.vs/
