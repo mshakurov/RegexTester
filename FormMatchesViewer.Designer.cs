@@ -68,6 +68,14 @@ namespace regexTester
         ScrollBars = System.Windows.Forms.ScrollBars.Vertical,
         HideSelection = false
       };
+      edMatchesInfo = new System.Windows.Forms.TextBox()
+      {
+        Multiline = true,
+        Dock = System.Windows.Forms.DockStyle.Fill,
+        BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle,
+        ScrollBars = System.Windows.Forms.ScrollBars.Vertical,
+        HideSelection = false
+      };
       edTemplate = new System.Windows.Forms.ComboBox()
       {
         DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown,
@@ -83,10 +91,12 @@ namespace regexTester
       {
         Text = "<"
       };
+      btnMatchPrev.Width = btnMatchPrev.Width / 2;
       btnMatchNext = new System.Windows.Forms.Button()
       {
         Text = ">"
       };
+      btnMatchNext.Width = btnMatchNext.Width / 2;
       btnTextClearFormat = new System.Windows.Forms.Button()
       {
         Text = "Clear colors"
@@ -148,6 +158,10 @@ namespace regexTester
       pgMatchesTable = new System.Windows.Forms.TabPage()
       {
         Text = "Table"
+      };
+      pgMatchesInfo = new System.Windows.Forms.TabPage()
+      {
+        Text = "Info"
       };
       bsMatchGroups = new System.Windows.Forms.BindingSource()
       {
@@ -215,14 +229,16 @@ namespace regexTester
       edText.BringToFront();
 
       panelMatchesLog.Controls.Add(panSync);
-      panelMatchesLog.Controls.Add(tabControlMacthes);
+      panelMatchesLog.Controls.Add( tabControlMacthes );
       panSync.BringToFront();
       tabControlMacthes.BringToFront();
 
       tabControlMacthes.TabPages.Add(pgMatchesText);
-      tabControlMacthes.TabPages.Add(pgMatchesTable);
-
+      tabControlMacthes.TabPages.Add( pgMatchesTable );
+      tabControlMacthes.TabPages.Add( pgMatchesInfo );
+      
       pgMatchesText.Controls.Add(edMatchesLog);
+      pgMatchesInfo.Controls.Add( edMatchesInfo );
 
       panSync.Controls.Add(btnMatchLogToTextSync);
       panSync.Controls.Add(this.btnTextToMatchLogSync);
@@ -290,6 +306,7 @@ namespace regexTester
     private System.Windows.Forms.RichTextBox edText;
     private System.Windows.Forms.Panel panelMatchesLog;
     private System.Windows.Forms.TextBox edMatchesLog;
+    private System.Windows.Forms.TextBox edMatchesInfo;
     private System.Windows.Forms.Button btnTextToMatchLogSync;
     private System.Windows.Forms.ComboBox edTemplate;
     private System.Windows.Forms.Button buttonTest;
@@ -305,6 +322,7 @@ namespace regexTester
     private System.Windows.Forms.DataGridView gridMatches;
     private System.Windows.Forms.TabPage pgMatchesText;
     private System.Windows.Forms.TabPage pgMatchesTable;
+    private System.Windows.Forms.TabPage pgMatchesInfo;
     private System.Windows.Forms.BindingNavigator navigatorMatchGroups;
     private System.Windows.Forms.BindingSource bsMatchGroups;
     private System.Windows.Forms.ContextMenuStrip menuStripMatchGroups;

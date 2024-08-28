@@ -20,9 +20,6 @@ namespace regexTester
     {
       InitializeComponent();
 
-      btnMatchPrev.Width = btnMatchPrev.Width / 2;
-      btnMatchNext.Width = btnMatchNext.Width / 2;
-
       //   edMatchesLog.ScrollBars = ScrollBars.Both;
       //   edMatchesLog.WordWrap = false;
     }
@@ -50,6 +47,7 @@ namespace regexTester
         edText.SelectionColor = edText.ForeColor;
         edText.DeselectAll();
         edMatchesLog.Text = "";
+        edMatchesInfo.Text = "";
         bsMatchGroups.DataSource = null;
         var point = new Point(edText.SelectionStart, edText.SelectionLength);
 
@@ -62,7 +60,7 @@ namespace regexTester
         if (state.Matches.Length > 0)
           state.CurMatchIdx = 0;
 
-        edMatchesLog.Text = $"Matches: {state.Matches.Length}";
+        edMatchesInfo.Text = edMatchesLog.Text = $"Matches: {state.Matches.Length}";
 
         var sbMatchesLog = new StringBuilder();
 
@@ -114,9 +112,20 @@ namespace regexTester
             table.Rows.Add(objs);
             sbMatchesLog.AppendLine($"M: {idx}. idx:{m.Index}, len:{m.Length}");
             sbMatchesLog.AppendLine($"- Groups ({m.Groups.Count}):");
-            sbMatchesLog.AppendLine($"{string.Join(Environment.NewLine, m.Groups.OfType<Group>().Select((g, i) => $"- - {i + 1}. idx:{g.Index}, [{(g.Success ? "v" : " ")}] len:{g.Length}, val:{g.Value}"))}");
+            sbMatchesLog.AppendLine($"{string.Join(Environment.NewLine, m.Groups.OfType<Group>().Select((g, i) => $"- - {i + 1} '{g.Name}'. idx:{g.Index}, [{(g.Success ? "v" : " ")}] len:{g.Length}, val:{g.Value}"))}");
           }
           edMatchesLog.Text += Environment.NewLine + sbMatchesLog.ToString();
+          
+          edMatchesInfo.Text += ( Environment.NewLine + $"Group count: {state.Matches[0].Groups.Count}" );
+          for ( int iGrp = 1; iGrp < state.Matches[0].Groups.Count; iGrp++ )
+          {
+            var groupValues = state.Matches.OfType<Match>().Select( m => m.Groups[iGrp].Value ).GroupBy( groupValue => groupValue, ( groupValue, coll ) => new { groupValue, count = coll.Count(), uniqueValues = coll.GroupBy(ug => ug, (ug, ugColl) => $"{ug} ({ugColl.Count():#,0})").ToArray() }, StringComparer.InvariantCultureIgnoreCase ).ToArray();
+            edMatchesInfo.Text += ( Environment.NewLine + $"- Group[{iGrp}]['{state.Matches[0].Groups[iGrp].Name}']: Count CI: {groupValues.Count():#,0}, CC: {groupValues.Sum(gv => gv.uniqueValues.Length):#,0}. {( groupValues.Length > 10 ? $"(first {10}):" : string.Empty )}" );
+            edMatchesInfo.Text += ( Environment.NewLine );
+            edMatchesInfo.Text += ( string.Join(Environment.NewLine, groupValues.Take(10).Select(g => $"- - '{g.groupValue}' ({g.count:#,0})")) );
+            edMatchesInfo.Text += ( Environment.NewLine + "----------");
+          }
+
           gridMatches.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader;
           var selTab = tabControlMacthes.SelectedTab;
           gridMatches.DataBindingComplete += DataBindingComplete;
@@ -193,6 +202,14 @@ namespace regexTester
 
     private void buttonTest_Click(object sender, EventArgs e)
     {
+      //var debug_matches = Regex.Matches( edText.Text, @"(?<month>\w+?) (?<day>\d\d?) (?<time>\d\d:\d\d:\d\d) kernel(?<sourceIndex>\[[^\[\]]*?\])?: (?<action>[^ ]+?) (?:(?<act2>(:?(?<act2Name>[^ =]+?)=(?<act2Val>[^ =]+?[ &])?))|(?<act2>[^ ]+?)[ $])?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant );
+
+      //var debug_acts = string.Join("", Enumerable.Range( 2, 15 ).Select( i => @$"(?:(?<act{i}>(:?(?<act{i}Name>[^ =$]+?)=(?<act{i}Val>[^ =$]+?[ $\b])?))|(?<act{i}>[^ $]+?)[ $\b])[ $]?" ));
+
+      //var debug_acts = string.Join( "", Enumerable.Range( 2, 15 ).Select( i => @$"(?: (?<act{i}>(:?(?<act{i}Name>[^ =]+)=(?<act{i}Val>[^ =]+$?)?))|(?<act{i}>[^ ]+?$?))" ) );
+
+      //edTemplate.Text = @"(?<month>\w+?) (?<day>\d\d?) (?<time>\d\d:\d\d:\d\d) kernel(?<sourceIndex>\[[^\[\]]*?\])?: (?<action>[^ $\b]+?) " + debug_acts;
+
       if (string.IsNullOrWhiteSpace(edTemplate.Text))
       {
         MessageBox.Show("Не задан шаблон");
