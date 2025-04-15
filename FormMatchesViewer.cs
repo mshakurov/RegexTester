@@ -69,30 +69,6 @@ namespace regexTester
           var sw = Stopwatch.StartNew();
           var breaked = false;
 
-          edText.SuspendLayout();
-          this.SuspendLayout();
-          try
-          {
-            foreach (var m in state.Matches)
-            {
-              edText.Select(m.Index, m.Length);
-              edText.SelectionColor = Color.Yellow;
-              edText.SelectionBackColor = Color.Red;
-
-              if (sw.ElapsedMilliseconds >= 5000)
-              {
-                if (breaked = (MessageBox.Show(this, "Слишком много совпадений!\r\nПродолжить следующие 5 сек добавлять совпадения?", "Совпадения", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No))
-                  break;
-                sw.Restart();
-              }
-            }
-          }
-          finally
-          {
-            edText.ResumeLayout();
-            this.ResumeLayout();
-          }
-
           var table = new DataTable();
           table.Columns.Add("M", typeof(int));
           table.Columns.Add("M?", typeof(bool));
@@ -105,15 +81,44 @@ namespace regexTester
             table.Columns.Add($"G{g.i}Val", typeof(string));
           });
           int idx = -1;
-          foreach (var m in state.Matches)
+		  
+          edText.SuspendLayout();
+          this.SuspendLayout();
+          try
           {
-            ++idx;
-            var objs = new object[] { idx, m.Success, m.Index, m.Length }.Concat(m.Groups.OfType<Group>().Select((g, i) => (g, i)).SelectMany(g => new object[] { g.g.Index, g.g.Length, g.g.Value })).ToArray();
-            table.Rows.Add(objs);
-            sbMatchesLog.AppendLine($"M: {idx}. idx:{m.Index}, len:{m.Length}");
-            sbMatchesLog.AppendLine($"- Groups ({m.Groups.Count}):");
-            sbMatchesLog.AppendLine($"{string.Join(Environment.NewLine, m.Groups.OfType<Group>().Select((g, i) => $"- - {i + 1} '{g.Name}'. idx:{g.Index}, [{(g.Success ? "v" : " ")}] len:{g.Length}, val:{g.Value}"))}");
+            foreach (var m in state.Matches)
+            {
+              edText.Select(m.Index, m.Length);
+              edText.SelectionColor = Color.Yellow;
+              edText.SelectionBackColor = Color.Red;
+
+			++idx;
+			var objs = new object[] { idx, m.Success, m.Index, m.Length }.Concat(m.Groups.OfType<Group>().Select((g, i) => (g, i)).SelectMany(g => new object[] { g.g.Index, g.g.Length, g.g.Value })).ToArray();
+			table.Rows.Add(objs);
+			sbMatchesLog.AppendLine($"M: {idx}. idx:{m.Index}, len:{m.Length}");
+			sbMatchesLog.AppendLine($"- Groups ({m.Groups.Count}):");
+			sbMatchesLog.AppendLine($"{string.Join(Environment.NewLine, m.Groups.OfType<Group>().Select((g, i) => $"- - {i + 1} '{g.Name}'. idx:{g.Index}, [{(g.Success ? "v" : " ")}] len:{g.Length}, val:{g.Value}"))}");
+
+              if (sw.ElapsedMilliseconds >= 5000)
+              {
+                if (breaked = (MessageBox.Show(this, "Слишком много совпадений!\r\nПродолжить следующие 5 сек добавлять совпадения?", "Совпадения", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No))
+				{
+				  var breakInfo = $"@ Добавление совпадений прервано. Из всех {state.Matches.Length:#,0} совпадений отображено {table.Rows.Count}.";
+				  edMatchesInfo.Text =  breakInfo + Environment.NewLine + "---" + Environment.NewLine + edMatchesInfo.Text;
+				  edMatchesLog.Text =  breakInfo + Environment.NewLine + "---" + Environment.NewLine + edMatchesLog.Text;
+				  sbMatchesLog.AppendLine("---").AppendLine(breakInfo).AppendLine("---");
+                  break;
+				}
+                sw.Restart();
+              }
+            }
           }
+          finally
+          {
+            edText.ResumeLayout();
+            this.ResumeLayout();
+          }
+
           edMatchesLog.Text += Environment.NewLine + sbMatchesLog.ToString();
           
           edMatchesInfo.Text += ( Environment.NewLine + $"Group count: {state.Matches[0].Groups.Count}" );
